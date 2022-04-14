@@ -61,5 +61,8 @@ class ConversationHandler(MessageHandler, CallbackQueryHandler):
         pass
 
     def delete_waiter(self, chat_id, future):
-        if future == self.waiters[chat_id]['future']:
-            del self.waiters[chat_id]
+        try:
+            if future == self.waiters[chat_id]['future']:
+                del self.waiters[chat_id]
+        except KeyError:
+            pass
