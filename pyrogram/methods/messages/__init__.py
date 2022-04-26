@@ -29,13 +29,14 @@ from .edit_message_media import EditMessageMedia
 from .edit_message_reply_markup import EditMessageReplyMarkup
 from .edit_message_text import EditMessageText
 from .forward_messages import ForwardMessages
+from .get_chat_history import GetChatHistory
+from .get_chat_history_count import GetChatHistoryCount
 from .get_discussion_message import GetDiscussionMessage
-from .get_history import GetHistory
-from .get_history_count import GetHistoryCount
+from .get_discussion_replies import GetDiscussionReplies
+from .get_discussion_replies_count import GetDiscussionRepliesCount
 from .get_media_group import GetMediaGroup
 from .get_messages import GetMessages
-from .iter_history import IterHistory
-from .read_history import ReadHistory
+from .read_chat_history import ReadChatHistory
 from .retract_vote import RetractVote
 from .search_global import SearchGlobal
 from .search_global_count import SearchGlobalCount
@@ -60,6 +61,7 @@ from .send_video import SendVideo
 from .send_video_note import SendVideoNote
 from .send_voice import SendVoice
 from .stop_poll import StopPoll
+from .stream_media import StreamMedia
 from .vote_poll import VotePoll
 from .wait_for_message import WaitForMessage
 from .wait_for_callback_query import WaitForCallbackQuery
@@ -71,7 +73,6 @@ class Messages(
     EditMessageMedia,
     EditMessageText,
     ForwardMessages,
-    GetHistory,
     GetMediaGroup,
     GetMessages,
     SendAudio,
@@ -93,10 +94,10 @@ class Messages(
     StopPoll,
     RetractVote,
     DownloadMedia,
-    IterHistory,
+    GetChatHistory,
     SendCachedMedia,
-    GetHistoryCount,
-    ReadHistory,
+    GetChatHistoryCount,
+    ReadChatHistory,
     EditInlineText,
     EditInlineCaption,
     EditInlineMedia,
@@ -111,6 +112,9 @@ class Messages(
     GetDiscussionMessage,
     SendReaction,
     WaitForMessage,
-    WaitForCallbackQuery
+    WaitForCallbackQuery,
+    GetDiscussionReplies,
+    GetDiscussionRepliesCount,
+    StreamMedia
 ):
     pass
