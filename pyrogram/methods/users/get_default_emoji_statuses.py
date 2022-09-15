@@ -16,36 +16,30 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with Pyrogram.  If not, see <http://www.gnu.org/licenses/>.
 
-import logging
+from typing import List
 
 import pyrogram
+from pyrogram import raw
+from pyrogram import types
 
-log = logging.getLogger(__name__)
 
-
-class Initialize:
-    async def initialize(
+class GetDefaultEmojiStatuses:
+    async def get_default_emoji_statuses(
         self: "pyrogram.Client",
-    ):
-        """Initialize the client by starting up workers.
+    ) -> List["types.EmojiStatus"]:
+        """Get the default emoji statuses.
 
-        This method will start updates and download workers.
-        It will also load plugins and start the internal dispatcher.
+        Returns:
+            List of :obj:`~pyrogram.types.EmojiStatus`: On success, a list of emoji statuses is returned.
 
-        Raises:
-            ConnectionError: In case you try to initialize a disconnected client or in case you try to initialize an
-                already initialized client.
+        Example:
+            .. code-block:: python
+
+                default_emoji_statuses = await app.get_default_emoji_statuses()
+                print(default_emoji_statuses)
         """
-        if not self.is_connected:
-            raise ConnectionError("Can't initialize a disconnected client")
+        r = await self.invoke(
+            raw.functions.account.GetDefaultEmojiStatuses(hash=0)
+        )
 
-        if self.is_initialized:
-            raise ConnectionError("Client is already initialized")
-
-        self.load_plugins()
-
-        self.me = await self.get_me()
-
-        await self.dispatcher.start()
-
-        self.is_initialized = True
+        return types.List([types.EmojiStatus._parse(self, i) for i in r.statuses])

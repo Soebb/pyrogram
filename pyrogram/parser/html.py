@@ -75,6 +75,10 @@ class Parser(HTMLParser):
             else:
                 entity = raw.types.MessageEntityTextUrl
                 extra["url"] = url
+        elif tag == "emoji":
+            entity = raw.types.MessageEntityCustomEmoji
+            custom_emoji_id = int(attrs.get("id"))
+            extra["document_id"] = custom_emoji_id
         else:
             return
 
@@ -140,9 +144,12 @@ class HTML:
 
             entities.append(entity)
 
+        # Remove zero-length entities
+        entities = list(filter(lambda x: x.length > 0, entities))
+
         return {
             "message": utils.remove_surrogates(parser.text),
-            "entities": sorted(entities, key=lambda e: e.offset)
+            "entities": sorted(entities, key=lambda e: e.offset) or None
         }
 
     @staticmethod
@@ -156,13 +163,21 @@ class HTML:
             start = entity.offset
             end = start + entity.length
 
-            if entity_type in (MessageEntityType.BOLD, MessageEntityType.ITALIC, MessageEntityType.UNDERLINE,
-                               MessageEntityType.STRIKETHROUGH):
+            if entity_type in (
+                MessageEntityType.BOLD,
+                MessageEntityType.ITALIC,
+                MessageEntityType.UNDERLINE,
+                MessageEntityType.STRIKETHROUGH,
+            ):
                 name = entity_type.name[0].lower()
                 start_tag = f"<{name}>"
                 end_tag = f"</{name}>"
-            elif entity_type in (MessageEntityType.CODE, MessageEntityType.PRE, MessageEntityType.BLOCKQUOTE,
-                                 MessageEntityType.SPOILER):
+            elif entity_type in (
+                MessageEntityType.CODE,
+                MessageEntityType.PRE,
+                MessageEntityType.BLOCKQUOTE,
+                MessageEntityType.SPOILER,
+            ):
                 name = entity_type.name.lower()
                 start_tag = f"<{name}>"
                 end_tag = f"</{name}>"
@@ -174,6 +189,10 @@ class HTML:
                 user = entity.user
                 start_tag = f'<a href="tg://user?id={user.id}">'
                 end_tag = "</a>"
+            elif entity_type == MessageEntityType.CUSTOM_EMOJI:
+                custom_emoji_id = entity.custom_emoji_id
+                start_tag = f'<emoji id="{custom_emoji_id}">'
+                end_tag = "</emoji>"
             else:
                 continue
 
